@@ -35,8 +35,7 @@ def add_usauario():
         nombre = request.json['nombre']
         email = request.json['email']
         clave = request.json['clave']
-        fkusuario = request.json['fkusuario']
-        usuario = Usuario("", nombre, email, clave, fkusuario)
+        usuario = Usuario("", nombre, email, clave)
 
         affected_rows = UsuarioModel.add_usuario(usuario)
 

@@ -10,12 +10,11 @@ class UsuarioModel ():
             usuarios = []
 
             with connection.cursor() as cursor:
-                cursor.execute("""SELECT idusuario, nombre, email, clave, fkusuario,
-                    fechacreacion FROM public.usuario ORDER BY nombre""")
+                cursor.execute("""SELECT idusuario, nombre, email, clave, fechacreacion FROM public.usuario ORDER BY nombre""")
                 resultset = cursor.fetchall()
                 
                 for row in resultset:
-                    usuario = Usuario(row[0],row[1],row[2],row[3],row[4],row[5])
+                    usuario = Usuario(row[0],row[1],row[2],row[3],row[4])
                     usuarios.append(usuario.to_JSON())                     
             
             connection.close()
@@ -30,13 +29,13 @@ class UsuarioModel ():
             usuarios = []
 
             with connection.cursor() as cursor:
-                cursor.execute("""SELECT idusuario, nombre, email, clave, fkusuario, 
-                    fechacreacion FROM public.usuario WHERE idusuario = %s ORDER BY nombre""",(id,))
+                cursor.execute("""SELECT idusuario, nombre, email, clave, fechacreacion FROM public.usuario 
+                WHERE idusuario = %s ORDER BY nombre""",(id,))
                 row = cursor.fetchone()
                 
                 usuario = None
                 if row != None:
-                    usuario = Usuario(row[0],row[1],row[2],row[3],row[4],row[5])
+                    usuario = Usuario(row[0],row[1],row[2],row[3],row[4])
                     usuario = usuario.to_JSON()                 
             
             connection.close()
@@ -51,7 +50,8 @@ class UsuarioModel ():
             usuarios = []
 
             with connection.cursor() as cursor:
-                cursor.execute("""INSERT INTO public.usuario (nombre, email, clave, fkusuario, fechacreacion) VALUE(%s,%s,%s,1 ,now())""",(usuario.nombre, usuario.email, usuario.clave,))
+                cursor.execute("""INSERT INTO public.usuario (nombre, email, clave, fechacreacion) 
+                VALUE(%s,%s,%s,now())""",(usuario.nombre, usuario.email, usuario.clave,))
                 affected_rows= cursor.rowcount
                 connection.commit()                
             
