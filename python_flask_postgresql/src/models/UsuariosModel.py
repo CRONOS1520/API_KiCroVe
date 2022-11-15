@@ -26,7 +26,6 @@ class UsuarioModel ():
     def get_usuario(self, id):
         try:
             connection = get_connection()
-            usuarios = []
 
             with connection.cursor() as cursor:
                 cursor.execute("""SELECT idusuario, nombre, email, clave, fechacreacion FROM public.usuario 
@@ -47,11 +46,39 @@ class UsuarioModel ():
     def add_usuario(self, usuario):
         try:
             connection = get_connection()
-            usuarios = []
 
             with connection.cursor() as cursor:
-                cursor.execute("""INSERT INTO public.usuario (nombre, email, clave, fechacreacion) 
-                VALUE(%s,%s,%s,now())""",(usuario.nombre, usuario.email, usuario.clave,))
+                cursor.execute("""INSERT INTO public.usuario (nombre, email, clave) VALUES(%s,%s,%s)""",(usuario.nombre, usuario.email, usuario.clave,))
+                affected_rows= cursor.rowcount
+                connection.commit()                
+            
+            connection.close()
+            return affected_rows
+        except Exception as ex:
+            raise Exception(ex)
+
+    @classmethod
+    def update_usuario(self, usuario):
+        try:
+            connection = get_connection()
+
+            with connection.cursor() as cursor:
+                cursor.execute("""UPDATE public.usuario SET nombre=%s, email=%s, clave=%s WHERE idusuario=%s""",(usuario.nombre, usuario.email, usuario.clave,usuario.id))
+                affected_rows= cursor.rowcount
+                connection.commit()                
+            
+            connection.close()
+            return affected_rows
+        except Exception as ex:
+            raise Exception(ex)
+
+    @classmethod
+    def delete_usuario(self, usuario):
+        try:
+            connection = get_connection()
+
+            with connection.cursor() as cursor:
+                cursor.execute("""DELETE FROM public.usuario WHERE idusuario = %s""",(usuario.id,))
                 affected_rows= cursor.rowcount
                 connection.commit()                
             
