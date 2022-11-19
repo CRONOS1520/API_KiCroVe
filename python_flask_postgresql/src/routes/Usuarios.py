@@ -1,4 +1,5 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, json
+from pprint import pprint
 import traceback
 
 #Entities
@@ -17,10 +18,10 @@ def get_usuarios():
     except Exception as ex:
         return jsonify({'message': str(ex)}), 500
 
-@main.route('/<id>')
-def get_usauario(id):
+@main.route('/<nombre>')
+def get_usauario(nombre):
     try:
-        usuario = UsuarioModel.get_usuario(id)
+        usuario = UsuarioModel.get_usuario(str(nombre))
 
         if usuario != None:
             return jsonify(usuario)
@@ -32,9 +33,12 @@ def get_usauario(id):
 @main.route('/add', methods=['POST'])
 def add_usauario():
     try:
-        nombre = request.json['nombre']
-        email = request.json['email']
-        clave = request.json['clave']
+        requestData= request.get_data().decode("utf-8").replace("'", '"')
+        requestJson = json.loads(json.loads(requestData))
+                    
+        nombre = requestJson[0]["nombre"]
+        email = requestJson[0]['email']
+        clave = requestJson[0]['clave']
         usuario = Usuario("", nombre, email, clave)
 
         affected_rows = UsuarioModel.add_usuario(usuario)
@@ -44,15 +48,17 @@ def add_usauario():
         else:
             return jsonify({'message' : "Error on insert"}), 500
     except BaseException as ex:
-        print(traceback.format_exc())
-        return jsonify({'message': str(traceback.format_exc())}), 500
+        return jsonify({'message': str(ex)}), 500
 
 @main.route('/update/<id>', methods=['PUT'])
 def update_usauario(id):
     try:
-        nombre = request.json['nombre']
-        email = request.json['email']
-        clave = request.json['clave']
+        requestData= request.get_data().decode("utf-8").replace("'", '"')
+        requestJson = json.loads(json.loads(requestData))
+        
+        nombre = requestJson[0]["nombre"]
+        email = requestJson[0]['email']
+        clave = requestJson[0]['clave']
         usuario = Usuario(id, nombre, email, clave)
 
         affected_rows = UsuarioModel.update_usuario(usuario)
@@ -62,8 +68,7 @@ def update_usauario(id):
         else:
             return jsonify({'message' : "No usuario update"}), 404
     except BaseException as ex:
-        print(traceback.format_exc())
-        return jsonify({'message': str(traceback.format_exc())}), 500
+        return jsonify({'message': str(ex)}), 500
 
 @main.route('/delete/<id>', methods=['DELETE'])
 def delete_usuario(id):
@@ -77,5 +82,4 @@ def delete_usuario(id):
         else:
             return jsonify({'message' : "No usuario delete"}), 404
     except BaseException as ex:
-        print(traceback.format_exc())
-        return jsonify({'message': str(traceback.format_exc())}), 500
+        return jsonify({'message': str(ex)}), 500

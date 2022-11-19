@@ -23,13 +23,13 @@ class UsuarioModel ():
             raise Exception(ex)
 
     @classmethod
-    def get_usuario(self, id):
+    def get_usuario(self, nombre):
         try:
             connection = get_connection()
 
             with connection.cursor() as cursor:
                 cursor.execute("""SELECT idusuario, nombre, email, clave, fechacreacion FROM public.usuario 
-                WHERE idusuario = %s ORDER BY nombre""",(id,))
+                WHERE nombre = %s ORDER BY nombre""",(nombre,))
                 row = cursor.fetchone()
                 
                 usuario = None

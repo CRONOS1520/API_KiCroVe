@@ -6,6 +6,7 @@ from config import config
 
 #Routes
 from routes import Usuarios
+from routes import Notas
 
 app = Flask(__name__)
 
@@ -19,6 +20,7 @@ if __name__== '__main__':
 
     #Blueprints
     app.register_blueprint(Usuarios.main, url_prefix='/usuario')
+    app.register_blueprint(Notas.main, url_prefix='/nota')
 
     #Error handlers
     app.register_error_handler(404, page_not_found)
