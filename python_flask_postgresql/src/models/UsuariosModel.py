@@ -10,11 +10,11 @@ class UsuarioModel ():
             usuarios = []
 
             with connection.cursor() as cursor:
-                cursor.execute("""SELECT idusuario, nombre, email, clave, fechacreacion FROM public.usuario ORDER BY nombre""")
+                cursor.execute("""SELECT idusuario, nombre, email, clave FROM public.usuario ORDER BY nombre""")
                 resultset = cursor.fetchall()
                 
                 for row in resultset:
-                    usuario = Usuario(row[0],row[1],row[2],row[3],row[4])
+                    usuario = Usuario(row[0],row[1],row[2],row[3])
                     usuarios.append(usuario.to_JSON())                     
             
             connection.close()
@@ -25,20 +25,20 @@ class UsuarioModel ():
     @classmethod
     def get_usuario(self, nombre):
         try:
-            connection = get_connection()
-
+            connection = get_connection()            
+            usuarios = []
+            
             with connection.cursor() as cursor:
-                cursor.execute("""SELECT idusuario, nombre, email, clave, fechacreacion FROM public.usuario 
+                cursor.execute("""SELECT idusuario, nombre, email, clave FROM public.usuario 
                 WHERE nombre = %s ORDER BY nombre""",(nombre,))
-                row = cursor.fetchone()
+                resultset = cursor.fetchall()
                 
-                usuario = None
-                if row != None:
-                    usuario = Usuario(row[0],row[1],row[2],row[3],row[4])
-                    usuario = usuario.to_JSON()                 
+                for row in resultset:
+                    usuario = Usuario(row[0],row[1],row[2],row[3])
+                    usuarios.append(usuario.to_JSON())                     
             
             connection.close()
-            return usuario
+            return usuarios
         except Exception as ex:
             raise Exception(ex)
 

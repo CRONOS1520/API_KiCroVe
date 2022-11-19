@@ -48,7 +48,7 @@ class NotaModel ():
 
             with connection.cursor() as cursor:
                 cursor.execute("""UPDATE public.nota SET titulo=%s, duracion=%s, fechanota=%s, fkestado=%s, fechafinalizacion=%s 
-                WHERE idnota=%s""",(nota.titulo, nota.duracion, nota.fechanota, nota.fkestado, nota.fechafinalizacion))
+                WHERE idnota=%s""",(nota.titulo, nota.duracion, nota.fechanota, nota.fkestado, nota.fechafinalizacion, nota.id))
                 affected_rows= cursor.rowcount
                 connection.commit()                
             
